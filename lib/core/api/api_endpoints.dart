@@ -1,4 +1,5 @@
 class ApiEndpoints {
+  static const baseUrl = 'https://api.github.com/v3/';
   static UserEndpoints user = UserEndpoints();
 }
 

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_github_api/core/api/api_endpoints.dart';
 import 'package:flutter_github_api/core/api/interceptor.dart';
 
 class ApiClient {
@@ -14,8 +15,7 @@ class ApiClient {
   Dio _createDio() {
     final dio = Dio(
       BaseOptions(
-        // TODO: remove hardcoded value later
-        baseUrl: 'https://api.github.com',
+        baseUrl: ApiEndpoints.baseUrl,
         connectTimeout: Duration(seconds: 5),
         receiveTimeout: Duration(seconds: 3),
       ),
