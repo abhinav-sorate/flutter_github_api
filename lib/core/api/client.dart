@@ -21,6 +21,15 @@ class ApiClient {
       ),
     );
     dio.interceptors.add(_apiInterceptor);
+
+    dio.interceptors.add(
+      LogInterceptor(
+        request: true,
+        requestBody: true,
+        responseBody: true,
+        error: true,
+      ),
+    );
     return dio;
   }
 
