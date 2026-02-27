@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_github_api/features/users/domain/entities/user_details_entity.dart';
 import 'package:flutter_github_api/features/users/domain/entities/user_list_entity.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter_github_api/core/constants/status.enum.dart';
@@ -19,6 +20,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       _searchUsers,
       transformer: debounce(const Duration(milliseconds: 500)),
     );
+
+    on<GetUserDetails>(_getUserDetails);
   }
 
   Future<void> _searchUsers(SearchUsers event, Emitter<UserState> emit) async {
@@ -35,6 +38,26 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       );
     } else {
       emit(state.copyWith(getUserSearchStatus: ApiStatus.error));
+    }
+  }
+
+  Future<void> _getUserDetails(
+    GetUserDetails event,
+    Emitter<UserState> emit,
+  ) async {
+    emit(state.copyWith(getUserDetailsStatus: ApiStatus.loading));
+
+    final user = await _userRepo.getUserDetails(username: event.username);
+
+    if (user.data != null) {
+      emit(
+        state.copyWith(
+          getUserDetailsStatus: ApiStatus.success,
+          userDetails: user.data,
+        ),
+      );
+    } else {
+      emit(state.copyWith(getUserDetailsStatus: ApiStatus.error));
     }
   }
 }
