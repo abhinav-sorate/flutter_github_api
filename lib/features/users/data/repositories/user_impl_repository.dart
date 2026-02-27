@@ -1,7 +1,7 @@
 import 'package:flutter_github_api/core/api/api_endpoints.dart';
 import 'package:flutter_github_api/core/api/api_result.dart';
 import 'package:flutter_github_api/core/api/client.dart';
-import 'package:flutter_github_api/core/repository/user_repository.dart';
+import 'package:flutter_github_api/features/users/domain/repositories/user_repository.dart';
 import 'package:flutter_github_api/features/users/data/models/user_list_model.dart';
 import 'package:flutter_github_api/features/users/domain/entities/user_list_entity.dart';
 

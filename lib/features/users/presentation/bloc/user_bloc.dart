@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_github_api/features/users/domain/entities/user_list_entity.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter_github_api/core/constants/status.enum.dart';
-import 'package:flutter_github_api/core/repository/user_repository.dart';
+import 'package:flutter_github_api/features/users/domain/repositories/user_repository.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';

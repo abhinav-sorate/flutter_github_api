@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_github_api/app/router/route_names.dart';
-import 'package:flutter_github_api/core/bloc/user_bloc.dart';
+import 'package:flutter_github_api/features/users/presentation/bloc/user_bloc.dart';
 import 'package:flutter_github_api/core/constants/status.enum.dart';
 import 'package:go_router/go_router.dart';
 
