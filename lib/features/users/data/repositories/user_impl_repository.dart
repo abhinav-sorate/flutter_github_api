@@ -1,6 +1,8 @@
 import 'package:flutter_github_api/core/api/api_endpoints.dart';
 import 'package:flutter_github_api/core/api/api_result.dart';
 import 'package:flutter_github_api/core/api/client.dart';
+import 'package:flutter_github_api/features/users/data/models/user_details_model.dart';
+import 'package:flutter_github_api/features/users/domain/entities/user_details_entity.dart';
 import 'package:flutter_github_api/features/users/domain/repositories/user_repository.dart';
 import 'package:flutter_github_api/features/users/data/models/user_list_model.dart';
 import 'package:flutter_github_api/features/users/domain/entities/user_list_entity.dart';
@@ -31,12 +33,15 @@ class UserRepoImpl extends UserRepo {
   }
 
   @override
-  Future<ApiResult<dynamic>> getUserDetails({required String username}) async {
+  Future<ApiResult<UserDetailsEntity>> getUserDetails({required String username}) async {
     try {
       final response = await _client.get(
         path: ApiEndpoints.user.getUserDetails(username: username),
       );
-      return ApiResult.success(response);
+      final user = UserDetailsModel.fromJson(
+        response.data as Map<String, dynamic>,
+      ).toEntity();
+      return ApiResult.success(user);
     } catch (e) {
       return ApiResult.error(e);
     }

@@ -77,7 +77,7 @@ Widget _buildUserList() {
               ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
-                context.push(Routes.userDetails);
+                context.push(Routes.userDetailsPath(user.username));
               },
             );
           },
