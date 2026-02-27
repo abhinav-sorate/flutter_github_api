@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_github_api/app/router/route_names.dart';
 import 'package:flutter_github_api/core/bloc/user_bloc.dart';
 import 'package:flutter_github_api/core/constants/status.enum.dart';
-import 'package:flutter_github_api/features/users/presentation/screens/user_details_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class UserSearchScreen extends StatefulWidget {
   const UserSearchScreen({super.key});
@@ -22,7 +23,7 @@ class _UserSearchScreen extends State<UserSearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Search GitHub Users')),
+      appBar: AppBar(title: const Text('Search GitHub Users')),
       body: Column(
         children: [
           Padding(
@@ -76,10 +77,7 @@ Widget _buildUserList() {
               ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => UserDetailsScreen()),
-                );
+                context.push(Routes.userDetails);
               },
             );
           },
