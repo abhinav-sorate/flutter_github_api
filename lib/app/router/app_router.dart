@@ -15,7 +15,7 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: Routes.userDetails,
           builder: (BuildContext context, GoRouterState state) {
-            return const UserDetailsScreen();
+            return const UserDetailsScreen(username: '');
           },
         ),
       ],
