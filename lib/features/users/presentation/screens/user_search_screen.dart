@@ -57,11 +57,24 @@ Widget _buildUserList() {
             final user = state.userSearchList[index];
             return ListTile(
               leading: CachedNetworkImage(
-                imageUrl: user['avatar_url'],
+                imageUrl: user.avatarUrl,
                 width: 40,
                 height: 40,
               ),
-              title: Text(user['login']),
+              title: Text(user.username),
+              subtitle: Row(
+                children: [
+                  Icon(
+                    user.type == 'Organization' ? Icons.business : Icons.person,
+                    size: 14,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(user.type),
+                  const SizedBox(width: 4),
+                  Text(user.id.toString()),
+                ],
+              ),
+              trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.push(
                   context,
