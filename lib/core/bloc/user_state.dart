@@ -3,15 +3,15 @@ part of 'user_bloc.dart';
 class UserState extends Equatable {
   const UserState({
     this.getUserSearchStatus = ApiStatus.initial,
-    this.userSearchList = const <UserListModel>[],
+    this.userSearchList = const <UserListEntity>[],
   });
 
   final ApiStatus getUserSearchStatus;
-  final List<UserListModel> userSearchList;
+  final List<UserListEntity> userSearchList;
 
   UserState copyWith({
     ApiStatus? getUserSearchStatus,
-    List<UserListModel>? userSearchList,
+    List<UserListEntity>? userSearchList,
   }) {
     return UserState(
       getUserSearchStatus: getUserSearchStatus ?? this.getUserSearchStatus,

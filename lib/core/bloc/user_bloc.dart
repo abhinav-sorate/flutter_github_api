@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_github_api/features/users/data/models/user_list_model.dart';
+import 'package:flutter_github_api/features/users/domain/entities/user_list_entity.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter_github_api/core/constants/status.enum.dart';
 import 'package:flutter_github_api/core/repository/user_repository.dart';
