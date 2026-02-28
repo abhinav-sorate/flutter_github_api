@@ -28,9 +28,32 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
 
   Future<void> _searchUsers(SearchUsers event, Emitter<UserState> emit) async {
+    final keyword = event.keyword.trim();
+
+    if (keyword.isEmpty) {
+      emit(
+        state.copyWith(
+          getUserSearchStatus: ApiStatus.initial,
+          userSearchList: [],
+        ),
+      );
+      return;
+    }
+
     emit(state.copyWith(getUserSearchStatus: ApiStatus.loading));
 
-    final users = await _userRepo.searchUsers(keyword: event.keyword);
+    final users = await _userRepo.searchUsers(keyword: keyword);
+
+    // handle empty list in case user not found
+    if (users.data != null && users.data!.isEmpty) {
+      emit(
+        state.copyWith(
+          getUserSearchStatus: ApiStatus.notFound,
+          userSearchList: [],
+        ),
+      );
+      return;
+    }
 
     if (users.data != null) {
       emit(
@@ -39,9 +62,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           userSearchList: users.data,
         ),
       );
-    } else {
-      emit(state.copyWith(getUserSearchStatus: ApiStatus.error));
+      return;
     }
+
+    emit(state.copyWith(getUserSearchStatus: ApiStatus.error));
   }
 
   Future<void> _getUserDetails(

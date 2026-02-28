@@ -51,6 +51,10 @@ Widget _buildUserList() {
         return const Center(child: CircularProgressIndicator());
       }
 
+      if (state.getUserSearchStatus.isNotFound) {
+        return Center(child: Text('User not found'));
+      }
+
       if (state.getUserSearchStatus.isSuccess) {
         return ListView.builder(
           itemCount: state.userSearchList.length,
