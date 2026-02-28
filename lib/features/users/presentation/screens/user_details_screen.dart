@@ -114,7 +114,17 @@ Widget _buildRepositoryList() {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 4),
-                  Text(repo.description ?? '-'),
+                  Text(
+                    repo.description ?? 'No description provided',
+                    style: TextStyle(
+                      fontStyle: repo.description != null
+                          ? FontStyle.normal
+                          : FontStyle.italic,
+                      color: repo.description != null
+                          ? Colors.black87
+                          : Colors.grey,
+                    ),
+                  ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
@@ -127,7 +137,7 @@ Widget _buildRepositoryList() {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      Text(repo.language!),
+                      Text(repo.language ?? '-'),
                       const SizedBox(width: 12),
                       const Icon(Icons.star, size: 14, color: Colors.amber),
                       const SizedBox(width: 4),
