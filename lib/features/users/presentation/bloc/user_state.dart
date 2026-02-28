@@ -7,6 +7,9 @@ class UserState extends Equatable {
 
     this.getUserDetailsStatus = ApiStatus.initial,
     this.userDetails,
+
+    this.getUserReposStatus = ApiStatus.initial,
+    this.userRepoList = const <UserRepoEntity>[]
   });
 
   final ApiStatus getUserSearchStatus;
@@ -15,12 +18,18 @@ class UserState extends Equatable {
   final ApiStatus getUserDetailsStatus;
   final UserDetailsEntity? userDetails;
 
+  final ApiStatus getUserReposStatus;
+  final List<UserRepoEntity> userRepoList;
+
   UserState copyWith({
     ApiStatus? getUserSearchStatus,
     List<UserListEntity>? userSearchList,
 
     ApiStatus? getUserDetailsStatus,
     UserDetailsEntity? userDetails,
+
+    ApiStatus? getUserReposStatus,
+    List<UserRepoEntity>? userRepoList,
   }) {
     return UserState(
       getUserSearchStatus: getUserSearchStatus ?? this.getUserSearchStatus,
@@ -28,6 +37,9 @@ class UserState extends Equatable {
 
       getUserDetailsStatus: getUserDetailsStatus ?? this.getUserDetailsStatus,
       userDetails: userDetails ?? userDetails,
+
+      getUserReposStatus: getUserReposStatus ?? this.getUserReposStatus,
+      userRepoList: userRepoList ?? this.userRepoList,
     );
   }
 
@@ -38,5 +50,8 @@ class UserState extends Equatable {
 
     getUserDetailsStatus,
     userDetails,
+
+    getUserReposStatus,
+    userRepoList
   ];
 }

@@ -1,4 +1,4 @@
-import 'package:flutter_github_api/features/users/domain/entities/user_repos_entity.dart';
+import 'package:flutter_github_api/features/users/domain/entities/user_repo_entity.dart';
 
 class UserReposModel {
   final String name;
@@ -28,8 +28,8 @@ class UserReposModel {
     );
   }
 
-  UserReposEntity toEntity() {
-    return UserReposEntity(
+  UserRepoEntity toEntity() {
+    return UserRepoEntity(
       name: name,
       language: language,
       stars: stars,

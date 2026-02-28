@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 
-class UserReposEntity extends Equatable {
+class UserRepoEntity extends Equatable {
   final String name;
   final String language;
   final int stars;
   final String description;
   final String url;
 
-  const UserReposEntity({
+  const UserRepoEntity({
     required this.name,
     required this.language,
     required this.stars,
