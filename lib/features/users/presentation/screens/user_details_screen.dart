@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_github_api/core/constants/status.enum.dart';
+import 'package:flutter_github_api/core/utils/laguage_color_util.dart';
 import 'package:flutter_github_api/features/users/presentation/bloc/user_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -117,12 +118,18 @@ Widget _buildRepositoryList() {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      Text(
-                        repo.language ?? '-',
-                        style: const TextStyle(fontSize: 12),
+                      Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: LanguageColorUtil.getColor(repo.language),
+                          shape: BoxShape.circle,
+                        ),
                       ),
+                      const SizedBox(width: 6),
+                      Text(repo.language!),
                       const SizedBox(width: 12),
-                      const Icon(Icons.star, size: 14),
+                      const Icon(Icons.star, size: 14, color: Colors.amber),
                       const SizedBox(width: 4),
                       Text(repo.stars.toString()),
                     ],
