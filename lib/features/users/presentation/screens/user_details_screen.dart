@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_github_api/core/constants/status.enum.dart';
 import 'package:flutter_github_api/features/users/presentation/bloc/user_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserDetailsScreen extends StatefulWidget {
   final String username;
@@ -120,7 +121,6 @@ Widget _buildRepositoryList() {
                         repo.language ?? '-',
                         style: const TextStyle(fontSize: 12),
                       ),
-
                       const SizedBox(width: 12),
                       const Icon(Icons.star, size: 14),
                       const SizedBox(width: 4),
@@ -129,6 +129,15 @@ Widget _buildRepositoryList() {
                   ),
                 ],
               ),
+              onTap: () async {
+                try {
+                  await _openRepo(repo.url);
+                } catch (_) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Could not open repository')),
+                  );
+                }
+              },
             );
           },
         );
@@ -159,5 +168,13 @@ class _FollowInfo extends StatelessWidget {
         Text(title, style: const TextStyle(color: Colors.grey)),
       ],
     );
+  }
+}
+
+Future<void> _openRepo(String url) async {
+  final uri = Uri.parse(url);
+
+  if (!await launchUrl(uri, mode: LaunchMode.inAppBrowserView)) {
+    throw Exception('Could not launch $url');
   }
 }
