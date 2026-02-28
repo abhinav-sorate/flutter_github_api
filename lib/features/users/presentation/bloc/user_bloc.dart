@@ -19,7 +19,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc(this._userRepo) : super(UserState()) {
     on<SearchUsers>(
       _searchUsers,
-      transformer: debounce(const Duration(milliseconds: 500)),
+      transformer: debounce(const Duration(milliseconds: 1000)),
     );
 
     on<GetUserDetails>(_getUserDetails);
@@ -64,19 +64,19 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
   }
 
-   Future<void> _getUserRepos(
+  Future<void> _getUserRepos(
     GetUserRepos event,
     Emitter<UserState> emit,
   ) async {
     emit(state.copyWith(getUserReposStatus: ApiStatus.loading));
 
-    final user = await _userRepo.getUserRepos(username: event.username);
+    final repos = await _userRepo.getUserRepos(username: event.username);
 
-    if (user.data != null) {
+    if (repos.data != null) {
       emit(
         state.copyWith(
           getUserReposStatus: ApiStatus.success,
-          userRepoList: user.data,
+          userRepoList: repos.data,
         ),
       );
     } else {

@@ -15,6 +15,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
   @override
   void initState() {
     context.read<UserBloc>().add(GetUserDetails(username: widget.username));
+    context.read<UserBloc>().add(GetUserRepos(username: widget.username));
     super.initState();
   }
 
@@ -22,13 +23,15 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("User Details")),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(children: [_buildUserHeader()]),
-          ),
-        ],
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            _buildUserHeader(),
+            const Divider(),
+            _buildRepositoryList(),
+          ],
+        ),
       ),
     );
   }
@@ -37,13 +40,13 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
 Widget _buildUserHeader() {
   return BlocBuilder<UserBloc, UserState>(
     builder: (context, state) {
-      final user = state.userDetails!;
-
       if (state.getUserDetailsStatus.isLoading) {
         return const Center(child: CircularProgressIndicator());
       }
 
       if (state.getUserDetailsStatus.isSuccess) {
+        final user = state.userDetails!;
+
         return Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -79,6 +82,62 @@ Widget _buildUserHeader() {
       }
 
       return const Center(child: Text('User Details'));
+    },
+  );
+}
+
+Widget _buildRepositoryList() {
+  return BlocBuilder<UserBloc, UserState>(
+    builder: (context, state) {
+      if (state.getUserReposStatus.isLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      if (state.getUserReposStatus.isSuccess) {
+        final repos = state.userRepoList;
+        return ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: repos.length,
+          separatorBuilder: (_, _) => const Divider(),
+          itemBuilder: (context, index) {
+            final repo = repos[index];
+
+            return ListTile(
+              title: Text(
+                repo.name,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 4),
+                  Text(repo.description ?? '-'),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Text(
+                        repo.language ?? '-',
+                        style: const TextStyle(fontSize: 12),
+                      ),
+
+                      const SizedBox(width: 12),
+                      const Icon(Icons.star, size: 14),
+                      const SizedBox(width: 4),
+                      Text(repo.stars.toString()),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      }
+      if (state.getUserReposStatus.isError) {
+        return Center(child: Text('Something went wrong'));
+      }
+
+      return const Center(child: Text('User Repos'));
     },
   );
 }

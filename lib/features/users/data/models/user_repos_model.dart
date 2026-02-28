@@ -2,29 +2,29 @@ import 'package:flutter_github_api/features/users/domain/entities/user_repo_enti
 
 class UserReposModel {
   final String name;
-  final String language;
+  final String? language;
   final int stars;
-  final String description;
+  final String? description;
   final String htmlUrl;
-  final bool isFork;
+  final bool fork;
 
   UserReposModel({
     required this.name,
-    required this.language,
+    this.language,
     required this.stars,
-    required this.description,
+    this.description,
     required this.htmlUrl,
-    required this.isFork,
+    required this.fork,
   });
 
   factory UserReposModel.fromJson(Map<String, dynamic> json) {
     return UserReposModel(
       name: json['name'] as String,
-      language: json['language'] as String,
-      stars: json['stars'] as int,
-      description: json['description'] as String,
+      language: json['language'] as String?,
+      stars: (json['stargazers_count'] as num).toInt(),
+      description: json['description'] as String?,
       htmlUrl: json['html_url'] as String,
-      isFork: json['isFork'] as bool,
+      fork: json['fork'] as bool? ?? false,
     );
   }
 

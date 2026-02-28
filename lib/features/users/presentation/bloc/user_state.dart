@@ -36,7 +36,7 @@ class UserState extends Equatable {
       userSearchList: userSearchList ?? this.userSearchList,
 
       getUserDetailsStatus: getUserDetailsStatus ?? this.getUserDetailsStatus,
-      userDetails: userDetails ?? userDetails,
+      userDetails: userDetails ?? this.userDetails,
 
       getUserReposStatus: getUserReposStatus ?? this.getUserReposStatus,
       userRepoList: userRepoList ?? this.userRepoList,
