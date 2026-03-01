@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_github_api/app/router/route_names.dart';
 import 'package:flutter_github_api/features/users/presentation/bloc/user_bloc.dart';
 import 'package:flutter_github_api/core/constants/status.enum.dart';
+import 'package:flutter_github_api/features/users/presentation/widgets/user_list_shimmer.dart';
 import 'package:go_router/go_router.dart';
 
 class UserSearchScreen extends StatefulWidget {
@@ -48,7 +49,7 @@ Widget _buildUserList() {
   return BlocBuilder<UserBloc, UserState>(
     builder: (context, state) {
       if (state.getUserSearchStatus.isLoading) {
-        return const Center(child: CircularProgressIndicator());
+        return const UserListShimmer();
       }
 
       if (state.getUserSearchStatus.isNotFound) {

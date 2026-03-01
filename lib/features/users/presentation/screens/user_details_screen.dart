@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_github_api/core/constants/status.enum.dart';
-import 'package:flutter_github_api/core/utils/laguage_color_util.dart';
+import 'package:flutter_github_api/core/utils/language_color_util.dart';
 import 'package:flutter_github_api/features/users/presentation/bloc/user_bloc.dart';
+import 'package:flutter_github_api/features/users/presentation/widgets/user_header_shimmer.dart';
+import 'package:flutter_github_api/features/users/presentation/widgets/user_repo_shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UserDetailsScreen extends StatefulWidget {
@@ -43,7 +45,7 @@ Widget _buildUserHeader() {
   return BlocBuilder<UserBloc, UserState>(
     builder: (context, state) {
       if (state.getUserDetailsStatus.isLoading) {
-        return const Center(child: CircularProgressIndicator());
+        return const UserHeaderShimmer();
       }
 
       if (state.getUserDetailsStatus.isSuccess) {
@@ -92,7 +94,7 @@ Widget _buildRepositoryList() {
   return BlocBuilder<UserBloc, UserState>(
     builder: (context, state) {
       if (state.getUserReposStatus.isLoading) {
-        return const Center(child: CircularProgressIndicator());
+        return const UserReposShimmer();
       }
 
       if (state.getUserReposStatus.isSuccess) {
