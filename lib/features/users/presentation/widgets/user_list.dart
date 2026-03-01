@@ -33,7 +33,11 @@ class UserList extends StatelessWidget {
                   width: 40,
                   height: 40,
                 ),
-                title: Text(user.username),
+                title: Text(
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  user.username,
+                ),
                 subtitle: Row(
                   children: [
                     Icon(

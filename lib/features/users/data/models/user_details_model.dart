@@ -6,6 +6,7 @@ class UserDetailsModel {
   final String name;
   final int followers;
   final int following;
+  final String type;
 
   UserDetailsModel({
     required this.avatarUrl,
@@ -13,6 +14,7 @@ class UserDetailsModel {
     required this.name,
     required this.followers,
     required this.following,
+    required this.type,
   });
 
   factory UserDetailsModel.fromJson(Map<String, dynamic> json) {
@@ -22,6 +24,7 @@ class UserDetailsModel {
       name: json['name'] as String,
       followers: json['followers'] as int,
       following: json['following'] as int,
+      type: json['type'] as String
     );
   }
 
@@ -32,6 +35,7 @@ class UserDetailsModel {
       fullname: name,
       followers: followers,
       following: following,
+      type: type
     );
   }
 }

@@ -25,7 +25,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text("User Details")),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(12),
         child: Column(
           children: [UserHeader(), const Divider(), UserRepoList()],
         ),

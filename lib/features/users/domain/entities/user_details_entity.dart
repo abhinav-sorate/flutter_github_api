@@ -6,6 +6,7 @@ class UserDetailsEntity extends Equatable {
   final String fullname;
   final int followers;
   final int following;
+  final String type;
 
   const UserDetailsEntity({
     required this.avatarUrl,
@@ -13,6 +14,7 @@ class UserDetailsEntity extends Equatable {
     required this.fullname,
     required this.followers,
     required this.following,
+    required this.type,
   });
 
   @override
@@ -22,5 +24,6 @@ class UserDetailsEntity extends Equatable {
     fullname,
     followers,
     following,
+    type,
   ];
 }

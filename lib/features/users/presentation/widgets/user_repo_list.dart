@@ -29,6 +29,8 @@ class UserRepoList extends StatelessWidget {
 
               return ListTile(
                 title: Text(
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   repo.name,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
@@ -37,6 +39,8 @@ class UserRepoList extends StatelessWidget {
                   children: [
                     const SizedBox(height: 4),
                     Text(
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       repo.description ?? 'No description provided',
                       style: TextStyle(
                         fontStyle: repo.description != null
@@ -68,6 +72,7 @@ class UserRepoList extends StatelessWidget {
                     ),
                   ],
                 ),
+                trailing: const Icon(Icons.open_in_new_outlined),
                 onTap: () async {
                   final messenger = ScaffoldMessenger.of(context);
                   try {

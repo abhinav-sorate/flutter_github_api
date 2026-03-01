@@ -28,13 +28,33 @@ class UserHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   user.username,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
-                Text(user.fullname, style: TextStyle(color: Colors.grey)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 10,
+                  children: [
+                    Icon(
+                      user.type == 'Organization'
+                          ? Icons.business
+                          : Icons.person,
+                      size: 14,
+                    ),
+                    Flexible(
+                      child: Text(
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        user.fullname,
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 16),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
