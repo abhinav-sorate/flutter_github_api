@@ -21,6 +21,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       _searchUsers,
       transformer: debounce(const Duration(milliseconds: 1000)),
     );
+    on<LoadMoreUsers>(_loadMoreUsers);
 
     on<GetUserDetails>(_getUserDetails);
 
@@ -42,7 +43,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
     emit(state.copyWith(getUserSearchStatus: ApiStatus.loading));
 
-    final users = await _userRepo.searchUsers(keyword: keyword);
+    final users = await _userRepo.searchUsers(keyword: keyword, page: 1);
 
     // handle empty list in case user not found
     if (users.data != null && users.data!.isEmpty) {
@@ -60,12 +61,43 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         state.copyWith(
           getUserSearchStatus: ApiStatus.success,
           userSearchList: users.data,
+          searchPage: 1,
+          hasMoreSearch: users.data!.length == 30,
+          keyword: keyword,
         ),
       );
       return;
     }
 
     emit(state.copyWith(getUserSearchStatus: ApiStatus.error));
+  }
+
+  Future<void> _loadMoreUsers(
+    LoadMoreUsers event,
+    Emitter<UserState> emit,
+  ) async {
+    if (!state.hasMoreSearch || state.isSearchLoadMore) return;
+
+    emit(state.copyWith(isSearchLoadMore: true));
+
+    final nextPage = state.searchPage + 1;
+    final result = await _userRepo.searchUsers(
+      keyword: state.keyword,
+      page: nextPage,
+    );
+
+    if (result.data != null && result.data!.isNotEmpty) {
+      emit(
+        state.copyWith(
+          userSearchList: [...state.userSearchList, ...result.data!],
+          searchPage: nextPage,
+          hasMoreSearch: result.data!.length >= 30,
+          isSearchLoadMore: false,
+        ),
+      );
+    } else {
+      emit(state.copyWith(hasMoreSearch: false, isSearchLoadMore: false));
+    }
   }
 
   Future<void> _getUserDetails(

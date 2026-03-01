@@ -8,7 +8,8 @@ import 'package:flutter_github_api/features/users/presentation/widgets/shimmers/
 import 'package:go_router/go_router.dart';
 
 class UserList extends StatelessWidget {
-  const UserList({super.key});
+  final ScrollController scrollController;
+  const UserList({super.key, required this.scrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +25,17 @@ class UserList extends StatelessWidget {
 
         if (state.getUserSearchStatus.isSuccess) {
           return ListView.builder(
-            itemCount: state.userSearchList.length,
+            controller: scrollController,
+            itemCount: state.userSearchList.length + 1,
             itemBuilder: (_, index) {
+              if (index == state.userSearchList.length) {
+                return state.isSearchLoadMore
+                    ? const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Center(child: CircularProgressIndicator()),
+                      )
+                    : const SizedBox();
+              }
               final user = state.userSearchList[index];
               return ListTile(
                 leading: CachedNetworkImage(

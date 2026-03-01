@@ -12,6 +12,8 @@ class SearchUsers extends UserEvent {
   const SearchUsers({required this.keyword});
 }
 
+class LoadMoreUsers extends UserEvent {}
+
 class GetUserDetails extends UserEvent {
   final String username;
   const GetUserDetails({required this.username});

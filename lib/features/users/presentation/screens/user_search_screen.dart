@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_github_api/core/constants/status.enum.dart';
 import 'package:flutter_github_api/features/users/presentation/bloc/user_bloc.dart';
 import 'package:flutter_github_api/features/users/presentation/widgets/user_list.dart';
 
@@ -11,7 +12,22 @@ class UserSearchScreen extends StatefulWidget {
 }
 
 class _UserSearchScreen extends State<UserSearchScreen> {
-  final _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    _scrollController.addListener(() {
+      final state = context.read<UserBloc>().state;
+      if (_scrollController.position.extentAfter < 300 &&
+          state.hasMoreSearch &&
+          !state.isSearchLoadMore &&
+          state.getUserSearchStatus.isSuccess) {
+        context.read<UserBloc>().add(LoadMoreUsers());
+      }
+    });
+    super.initState();
+  }
 
   void _onSearch(String query) {
     context.read<UserBloc>().add(SearchUsers(keyword: query));
@@ -34,7 +50,7 @@ class _UserSearchScreen extends State<UserSearchScreen> {
               onChanged: _onSearch,
             ),
           ),
-          Expanded(child: const UserList()),
+          Expanded(child: UserList(scrollController: _scrollController)),
         ],
       ),
     );

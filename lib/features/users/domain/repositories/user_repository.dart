@@ -6,6 +6,8 @@ import 'package:flutter_github_api/features/users/domain/entities/user_repo_enti
 abstract class UserRepo {
   Future<ApiResult<List<UserListEntity>>> searchUsers({
     required String keyword,
+    required int page,
+    int perPage = 30,
   });
   Future<ApiResult<UserDetailsEntity>> getUserDetails({
     required String username,

@@ -16,10 +16,13 @@ class UserRepoImpl extends UserRepo {
   @override
   Future<ApiResult<List<UserListEntity>>> searchUsers({
     required String keyword,
+    required int page,
+    int perPage = 30,
   }) async {
     try {
       final response = await _client.get(
         path: ApiEndpoints.user.searchUsers(keyword: keyword),
+        queryParameters: {'page': page, 'per_page': perPage},
       );
       final List items = response.data['items'];
       final users = items
