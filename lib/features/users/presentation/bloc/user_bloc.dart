@@ -154,16 +154,18 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
     final nextPage = state.repoPage + 1;
     final result = await _userRepo.getUserRepos(
-      username: state.userDetails?.username ?? 'abhinav-sorate',
+      username: state.userDetails!.username,
       page: nextPage,
     );
 
-    if (result.data != null && result.data!.isNotEmpty) {
+    if (result.data != null) {
+      final allRepoCount = result.exception as int? ?? 0;
+
       emit(
         state.copyWith(
           userRepoList: [...state.userRepoList, ...result.data!],
           repoPage: nextPage,
-          hasMoreRepo: result.data!.length >= 30,
+          hasMoreRepo: allRepoCount == 30,
           isRepoLoadMore: false,
         ),
       );

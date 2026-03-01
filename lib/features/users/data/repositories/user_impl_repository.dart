@@ -1,6 +1,7 @@
 import 'package:flutter_github_api/core/api/api_endpoints.dart';
 import 'package:flutter_github_api/core/api/api_result.dart';
 import 'package:flutter_github_api/core/api/client.dart';
+import 'package:flutter_github_api/core/constants/status.enum.dart';
 import 'package:flutter_github_api/features/users/data/models/user_details_model.dart';
 import 'package:flutter_github_api/features/users/data/models/user_repos_model.dart';
 import 'package:flutter_github_api/features/users/domain/entities/user_details_entity.dart';
@@ -73,7 +74,11 @@ class UserRepoImpl extends UserRepo {
           .where((repo) => !repo.fork)
           .map((repo) => repo.toEntity())
           .toList();
-      return ApiResult.success(repos);
+      return ApiResult(
+        data: repos,
+        status: ApiStatus.success,
+        exception: data.length, // total repos including forked
+      );
     } catch (e) {
       return ApiResult.error(e);
     }
