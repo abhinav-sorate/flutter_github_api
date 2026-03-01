@@ -4,6 +4,14 @@ A Flutter application that allows users to search GitHub users and explore their
 
 ---
 
+## Demo
+
+<p align="center">
+  <img src="assets/demo/app_demo.gif" width="350">
+</p>
+
+---
+
 ## Features
 
 ### User Search
@@ -59,14 +67,13 @@ lib
 
 ---
 
-##  API
+## API
 
 Uses GitHub REST API:
 
 - `GET /search/users`
 - `GET /users/{username}`
 - `GET /users/{username}/repos`
-
 
 ---
 
@@ -157,4 +164,3 @@ flutter build ios
 ```
 
 ---
-
