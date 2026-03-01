@@ -14,5 +14,7 @@ abstract class UserRepo {
   });
   Future<ApiResult<List<UserRepoEntity>>> getUserRepos({
     required String username,
+    required int page,
+    int perPage = 30,
   });
 }

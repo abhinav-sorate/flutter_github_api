@@ -7,7 +7,8 @@ import 'package:flutter_github_api/features/users/presentation/widgets/shimmers/
 import 'package:url_launcher/url_launcher.dart';
 
 class UserRepoList extends StatelessWidget {
-  const UserRepoList({super.key});
+  final ScrollController scrollController;
+  const UserRepoList({super.key, required this.scrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +21,19 @@ class UserRepoList extends StatelessWidget {
         if (state.getUserReposStatus.isSuccess) {
           final repos = state.userRepoList;
           return ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: repos.length,
+            itemCount: repos.length + 1,
             separatorBuilder: (_, _) => const Divider(),
             itemBuilder: (context, index) {
-              final repo = repos[index];
+              if (index == state.userRepoList.length) {
+                return state.isRepoLoadMore
+                    ? const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Center(child: CircularProgressIndicator()),
+                      )
+                    : const SizedBox();
+              }
 
+              final repo = repos[index];
               return ListTile(
                 title: Text(
                   maxLines: 1,

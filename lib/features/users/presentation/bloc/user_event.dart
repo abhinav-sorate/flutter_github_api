@@ -23,3 +23,5 @@ class GetUserRepos extends UserEvent {
   final String username;
   const GetUserRepos({required this.username});
 }
+
+class LoadMoreRepos extends UserEvent {}

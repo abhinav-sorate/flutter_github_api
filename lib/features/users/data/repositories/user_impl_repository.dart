@@ -57,10 +57,13 @@ class UserRepoImpl extends UserRepo {
   @override
   Future<ApiResult<List<UserRepoEntity>>> getUserRepos({
     required String username,
+    required int page,
+    int perPage = 30,
   }) async {
     try {
       final response = await _client.get(
         path: ApiEndpoints.user.getUserRepos(username: username),
+        queryParameters: {'page': page, 'per_page': perPage},
       );
 
       final data = response.data as List;

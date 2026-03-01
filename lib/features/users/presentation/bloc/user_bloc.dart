@@ -26,6 +26,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<GetUserDetails>(_getUserDetails);
 
     on<GetUserRepos>(_getUserRepos);
+    on<LoadMoreRepos>(_loadMoreRepos);
   }
 
   Future<void> _searchUsers(SearchUsers event, Emitter<UserState> emit) async {
@@ -126,7 +127,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   ) async {
     emit(state.copyWith(getUserReposStatus: ApiStatus.loading));
 
-    final repos = await _userRepo.getUserRepos(username: event.username);
+    final repos = await _userRepo.getUserRepos(
+      username: event.username,
+      page: 1,
+    );
 
     if (repos.data != null) {
       emit(
@@ -137,6 +141,34 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       );
     } else {
       emit(state.copyWith(getUserReposStatus: ApiStatus.error));
+    }
+  }
+
+  Future<void> _loadMoreRepos(
+    LoadMoreRepos event,
+    Emitter<UserState> emit,
+  ) async {
+    if (!state.hasMoreRepo || state.isRepoLoadMore) return;
+
+    emit(state.copyWith(isRepoLoadMore: true));
+
+    final nextPage = state.repoPage + 1;
+    final result = await _userRepo.getUserRepos(
+      username: state.userDetails?.username ?? 'abhinav-sorate',
+      page: nextPage,
+    );
+
+    if (result.data != null && result.data!.isNotEmpty) {
+      emit(
+        state.copyWith(
+          userRepoList: [...state.userRepoList, ...result.data!],
+          repoPage: nextPage,
+          hasMoreRepo: result.data!.length >= 30,
+          isRepoLoadMore: false,
+        ),
+      );
+    } else {
+      emit(state.copyWith(hasMoreRepo: false, isRepoLoadMore: false));
     }
   }
 }
