@@ -30,7 +30,7 @@ class UserHeader extends StatelessWidget {
                 Text(
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  user.username,
+                  user.fullname,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
@@ -48,7 +48,7 @@ class UserHeader extends StatelessWidget {
                       child: Text(
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        user.fullname,
+                        user.username,
                         style: TextStyle(color: Colors.grey),
                       ),
                     ),
