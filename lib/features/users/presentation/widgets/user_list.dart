@@ -26,6 +26,7 @@ class UserList extends StatelessWidget {
         if (state.getUserSearchStatus.isSuccess) {
           return ListView.builder(
             controller: scrollController,
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             itemCount: state.userSearchList.length + 1,
             itemBuilder: (_, index) {
               if (index == state.userSearchList.length) {

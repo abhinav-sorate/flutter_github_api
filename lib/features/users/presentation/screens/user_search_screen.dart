@@ -34,6 +34,13 @@ class _UserSearchScreen extends State<UserSearchScreen> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Search GitHub Users')),
@@ -43,11 +50,26 @@ class _UserSearchScreen extends State<UserSearchScreen> {
             padding: const EdgeInsets.all(12),
             child: TextField(
               controller: _controller,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'Search users...',
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
+                suffixIcon: _controller.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          _controller.clear();
+                          context.read<UserBloc>().add(
+                            const SearchUsers(keyword: ''),
+                          );
+                          setState(() {}); // to update UI
+                        },
+                      )
+                    : null,
               ),
-              onChanged: _onSearch,
+              onChanged: (value) {
+                setState(() {}); // to update UI
+                _onSearch(value);
+              },
             ),
           ),
           Expanded(child: UserList(scrollController: _scrollController)),
