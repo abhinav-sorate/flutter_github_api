@@ -21,6 +21,7 @@ class UserRepoList extends StatelessWidget {
         if (state.getUserReposStatus.isSuccess) {
           final repos = state.userRepoList;
           return ListView.separated(
+            controller: scrollController,
             itemCount: repos.length + 1,
             separatorBuilder: (_, _) => const Divider(),
             itemBuilder: (context, index) {
