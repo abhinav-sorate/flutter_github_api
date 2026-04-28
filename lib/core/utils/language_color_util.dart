@@ -23,6 +23,10 @@ class LanguageColorUtil {
     'objective-c': Color(0xFF438EFF),
     'groovy': Color(0xFF4298B8),
     'powershell': Color(0xFF012456),
+    'lua': Color(0xFF000080),
+    'r': Color(0xFF198CE7),
+    'elixir': Color(0xFF6E4A7E),
+    'haskell': Color(0xFF5E5086),
   };
 
   static Color getColor(String? language) {

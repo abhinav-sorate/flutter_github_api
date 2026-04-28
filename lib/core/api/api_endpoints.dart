@@ -6,5 +6,5 @@ class ApiEndpoints {
 class UserEndpoints {
   String searchUsers({required String keyword}) => '/search/users?q=$keyword';
   String getUserDetails({required String username}) => '/users/$username';
-  String getUserRepos({required String username}) => 'users/$username/repos';
+  String getUserRepos({required String username}) => '/users/$username/repos';
 }
