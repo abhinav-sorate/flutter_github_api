@@ -1,0 +1,134 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, labeled]
+
+    # Optional: Only run on specific file changes
+    # paths:
+    #   - "src/**/*.ts"
+    #   - "src/**/*.tsx"
+    #   - "src/**/*.js"
+    #   - "src/**/*.jsx"
+
+jobs:
+  claude-review:
+    # Only run when the "claude-review" label itself was just added
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'claude-review') }}
+
+    # Optional: Filter by PR author
+    # if: |
+    #   github.event.pull_request.user.login == 'external-contributor' ||
+    #   github.event.pull_request.user.login == 'new-developer' ||
+    #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: read
+      id-token: write
+      # actions: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude Code Review
+        id: claude-review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+
+          # Direct prompt for automated review (no @claude mention needed)
+          prompt: |
+            Review pull request #${{ github.event.pull_request.number }} in this repository.
+            **Very Important**
+            - You should analyze and review this pull request based on the **latest git diff results**, DO NOT refer to any previous comments in the PR.
+            - You should submit as "COMMENT" type so the review doesn't block the PR.
+            - You should be constructive and helpful in your feedback.
+            - Use inline comments for line-specific issues and include an overall summary when submitting the review.
+
+            Your review should be focusing on:
+            - Code quality and best practices
+            - Architecture and design decisions
+            - Potential bugs or issues
+            - Performance considerations
+            - Security concerns
+            - Test coverage
+            - Maintainability and readability
+
+            **Inline Review Guidelines**
+            In the whole PR review process for #${{ github.event.pull_request.number }} in this repository, whenever you are trying to do inline reviews, you should follow these steps:
+            1. **Start a review**: Use `mcp__github__create_pending_pull_request_review` to begin a pending review for #${{ github.event.pull_request.number }} in this repository.
+            2. **Get diff information**: Use `mcp__github__get_pull_request_diff` to understand the code changes and line numbers.
+            3. **Add inline comments**: Use `mcp__github__add_comment_to_pending_review` for each specific piece of feedback on particular lines.
+            4. **Submit the review**: Use `mcp__github__submit_pending_pull_request_review` with event type "COMMENT" (NOT "REQUEST_CHANGES") to publish all comments as a non-blocking review.
+            5. **Double check**: In abovementioned steps, make sure the PR number is correct (#${{ github.event.pull_request.number }}).
+
+            If everything is good, please write "LGTM" in the comment.
+
+          # Optional: Use sticky comments to make Claude reuse the same comment on subsequent pushes to the same PR
+          # use_sticky_comment: true
+
+          # Optional: Customize review based on file types
+          # direct_prompt: |
+          #   Review this PR focusing on:
+          #   - For TypeScript files: Type safety and proper interface usage
+          #   - For API endpoints: Security, input validation, and error handling
+          #   - For React components: Performance, accessibility, and best practices
+          #   - For tests: Coverage, edge cases, and test quality
+
+          # Optional: Different prompts for different authors
+          # direct_prompt: |
+          #   ${{ github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR' &&
+          #   'Welcome! Please review this PR from a first-time contributor. Be encouraging and provide detailed explanations for any suggestions.' ||
+          #   'Please provide a thorough code review focusing on our coding standards and best practices.' }}
+
+          # Optional: Add specific tools for running tests or linting
+          # allowed_tools: "Bash(npm run test),Bash(npm run lint),Bash(npm run typecheck)"
+
+          # Optional: Skip review for certain conditions
+          # if: |
+          #   !contains(github.event.pull_request.title, '[skip-review]') &&
+          #   !contains(github.event.pull_request.title, '[WIP]')
+
+      - name: Hide old Claude comments as outdated
+        if: steps.claude-review.conclusion == 'success'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            // Filter for Claude Bot comments that are not already minimized
+            const claudeComments = comments.filter(comment => 
+              comment.user.login === 'claude[bot]' && 
+              !comment.minimized
+            ).slice(0, -1); // Exclude the latest comment
+
+            // Minimize each old Claude comment with "OUTDATED" reason
+            for (const comment of claudeComments) {
+              try {
+                await github.graphql(`
+                  mutation {
+                    minimizeComment(input: {
+                      subjectId: "${comment.node_id}"
+                      classifier: OUTDATED
+                    }) {
+                      minimizedComment {
+                        isMinimized
+                      }
+                    }
+                  }
+                `);
+              } catch (error) {
+                console.log(`Failed to minimize comment ${comment.id}: ${error.message}`);
+              }
+            }
