@@ -18,4 +18,7 @@ class ApiResult<T> {
   factory ApiResult.notFound() {
     return ApiResult(status: ApiStatus.notFound);
   }
+
+  bool get hasData => data != null && status.isSuccess;
+  bool get hasError => status.isError || status.isNotFound;
 }
