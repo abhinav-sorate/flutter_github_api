@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_github_api/app/app.dart';
-import 'package:flutter_github_api/core/locator.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 void main() async {
-  initLocator();
-  runApp(const App());
+  runApp(const ProviderScope(child: App()));
 }

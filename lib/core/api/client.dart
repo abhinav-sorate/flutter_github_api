@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_github_api/core/api/api_endpoints.dart';
-import 'package:flutter_github_api/core/api/interceptor.dart';
 
 class ApiClient {
   final String baseUrl;
@@ -10,8 +9,6 @@ class ApiClient {
     _dio = _createDio();
   }
 
-  DioInterceptor get _apiInterceptor => DioInterceptor();
-
   Dio _createDio() {
     final dio = Dio(
       BaseOptions(
@@ -20,7 +17,6 @@ class ApiClient {
         receiveTimeout: Duration(seconds: 5),
       ),
     );
-    dio.interceptors.add(_apiInterceptor);
 
     dio.interceptors.add(
       LogInterceptor(

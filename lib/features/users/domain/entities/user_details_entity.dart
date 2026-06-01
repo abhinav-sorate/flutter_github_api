@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-
-class UserDetailsEntity extends Equatable {
+class UserDetailsEntity {
   final String avatarUrl;
   final String username;
   final String fullname;
@@ -16,14 +14,4 @@ class UserDetailsEntity extends Equatable {
     required this.following,
     required this.type,
   });
-
-  @override
-  List<Object> get props => [
-    avatarUrl,
-    username,
-    fullname,
-    followers,
-    following,
-    type,
-  ];
 }

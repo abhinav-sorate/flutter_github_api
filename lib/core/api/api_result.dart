@@ -18,4 +18,19 @@ class ApiResult<T> {
   factory ApiResult.notFound() {
     return ApiResult(status: ApiStatus.notFound);
   }
+
+  R when<R>({
+    required R Function(T data) success,
+    required R Function(dynamic error) error,
+    R Function()? notFound,
+  }) {
+    switch (status) {
+      case ApiStatus.success:
+        return success(data as T);
+      case ApiStatus.error:
+        return error(exception);
+      case ApiStatus.notFound:
+        return notFound != null ? notFound() : error(exception);
+    }
+  }
 }

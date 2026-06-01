@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-
-class UserRepoEntity extends Equatable {
+class UserRepoEntity {
   final String name;
   final String? language;
   final int stars;
@@ -14,7 +12,4 @@ class UserRepoEntity extends Equatable {
     this.description,
     required this.url,
   });
-
-  @override
-  List<Object?> get props => [name, language, stars, description, url];
 }
