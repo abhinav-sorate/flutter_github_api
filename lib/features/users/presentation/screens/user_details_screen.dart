@@ -2,50 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:flutter_github_api/features/users/presentation/providers/user_repos_notifier.dart';
 import 'package:flutter_github_api/features/users/presentation/widgets/user_header.dart';
 import 'package:flutter_github_api/features/users/presentation/widgets/user_repo_list.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class UserDetailsScreen extends ConsumerStatefulWidget {
-  final String username;
+class UserDetailsScreen extends HookConsumerWidget {
   const UserDetailsScreen({super.key, required this.username});
 
-  @override
-  ConsumerState<UserDetailsScreen> createState() => _UserDetailsScreenState();
-}
-
-class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> {
-  final ScrollController _scrollController = ScrollController();
+  final String username;
 
   @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scrollController = useScrollController();
 
-  void _onScroll() {
-    final notifier = ref.read(userReposProvider(widget.username).notifier);
-    if (_scrollController.position.extentAfter < 300 && notifier.hasMore) {
-      notifier.loadMore(widget.username);
-    }
-  }
+    useEffect(() {
+      void onScroll() {
+        if (!scrollController.hasClients ||
+            !scrollController.position.hasContentDimensions) {
+          return;
+        }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+        final notifier = ref.read(userReposProvider(username).notifier);
+        if (scrollController.position.extentAfter < 300 && notifier.hasMore) {
+          notifier.loadMore(username);
+        }
+      }
 
-  @override
-  Widget build(BuildContext context) {
+      scrollController.addListener(onScroll);
+      return () => scrollController.removeListener(onScroll);
+    }, [scrollController, username]);
+
     return Scaffold(
       appBar: AppBar(title: const Text('User Details')),
       body: Column(
         children: [
-          UserHeader(username: widget.username),
+          UserHeader(username: username),
           const Divider(),
           Expanded(
             child: UserRepoList(
-              username: widget.username,
-              scrollController: _scrollController,
+              username: username,
+              scrollController: scrollController,
             ),
           ),
         ],

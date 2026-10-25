@@ -1,54 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_github_api/features/users/presentation/providers/search_users_notifier.dart';
 import 'package:flutter_github_api/features/users/presentation/widgets/user_list.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class UserSearchScreen extends ConsumerStatefulWidget {
+class UserSearchScreen extends HookConsumerWidget {
   const UserSearchScreen({super.key});
 
   @override
-  ConsumerState<UserSearchScreen> createState() => _UserSearchScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = useTextEditingController();
+    final scrollController = useScrollController();
 
-class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
-  final TextEditingController _controller = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
+    useEffect(() {
+      void onScroll() {
+        if (!scrollController.hasClients ||
+            !scrollController.position.hasContentDimensions) {
+          return;
+        }
 
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
+        final notifier = ref.read(searchUsersProvider.notifier);
+        if (scrollController.position.extentAfter < 300 && notifier.hasMore) {
+          notifier.loadMore();
+        }
+      }
 
-  void _onScroll() {
-    final notifier = ref.read(searchUsersProvider.notifier);
-    if (_scrollController.position.extentAfter < 300 && notifier.hasMore) {
-      notifier.loadMore();
+      scrollController.addListener(onScroll);
+      return () => scrollController.removeListener(onScroll);
+    }, [scrollController]);
+
+    void onSearch(String query) {
+      final notifier = ref.read(searchUsersProvider.notifier);
+      if (query.trim().isEmpty) {
+        notifier.clear();
+      } else {
+        notifier.search(query);
+      }
     }
-  }
 
-  void _onSearch(String query) {
-    if (query.trim().isEmpty) {
+    void onClear() {
+      controller.clear();
       ref.read(searchUsersProvider.notifier).clear();
-    } else {
-      ref.read(searchUsersProvider.notifier).search(query);
     }
-  }
 
-  void _onClear() {
-    _controller.clear();
-    ref.read(searchUsersProvider.notifier).clear();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Search GitHub Users')),
       body: Column(
@@ -56,26 +50,26 @@ class _UserSearchScreenState extends ConsumerState<UserSearchScreen> {
           Padding(
             padding: const EdgeInsets.all(12),
             child: ValueListenableBuilder(
-              valueListenable: _controller,
+              valueListenable: controller,
               builder: (context, value, _) {
                 return TextField(
-                  controller: _controller,
+                  controller: controller,
                   decoration: InputDecoration(
                     hintText: 'Search users...',
                     border: const OutlineInputBorder(),
                     suffixIcon: value.text.isNotEmpty
                         ? IconButton(
                             icon: const Icon(Icons.clear),
-                            onPressed: _onClear,
+                            onPressed: onClear,
                           )
                         : null,
                   ),
-                  onChanged: _onSearch,
+                  onChanged: onSearch,
                 );
               },
             ),
           ),
-          Expanded(child: UserList(scrollController: _scrollController)),
+          Expanded(child: UserList(scrollController: scrollController)),
         ],
       ),
     );
